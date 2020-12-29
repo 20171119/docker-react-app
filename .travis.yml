@@ -1,18 +1,31 @@
-sudo: required
+sudo: required # 관리자 권한 갖기
 
-language: generic
+language: generic # 언어(플랫폼)을 선택
 
-services:
+services: # 도커 환경 구성
   - docker
 
-before_install:
+before_install: # 스크립트를 실행할수 있는 환경 구성
   - echo "start creating an image with dockerfile" # echo -> 출력
   - docker build -t jspark98/docker-react-app -f Dockerfile.dev .
 
-script:
+script: #실행할 스크립트(테스트 실행)
   - docker run -e CI=true jspark98/docker-react-app npm run test -- --coverage
   # -e CI=true  -> travis 에서 test 하기위해 필요함
   # -- --coverage -> 좀더 자세한 test 내용 출력
 
-after_success:
-  -echo "Test success"
+deploy: #배포
+  provider: elasticbeanstalk #외부 서비스 표시
+  region: "ap-northeast-2" # aws 서비스 사용하는 장소
+  app: "docker-react-app" # app 이름
+  env: "DockerReactApp-env" # app 이 구축된 환경
+  bucket_name: "elasticbeanstalk-ap-northeast-2-888725167512" # s3 버켓 일므
+  bucket_path: "docker-react-app"
+  on:
+    branch: master # 어떤 브랜치에 push 할 때 aws에 배포할지
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+
+
+
+
