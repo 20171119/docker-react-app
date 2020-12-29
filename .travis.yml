@@ -1,0 +1,18 @@
+sudo: required
+
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - echo "start creating an image with dockerfile" # echo -> 출력
+  - docker build -t jspark98/docker-react-app -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true jspark98/docker-react-app npm run test -- --coverage
+  # -e CI=true  -> travis 에서 test 하기위해 필요함
+  # -- --coverage -> 좀더 자세한 test 내용 출력
+
+after_success:
+  -echo "Test success"
