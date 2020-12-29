@@ -1,0 +1,18 @@
+FROM node:alpine
+
+WORKDIR /usr/src/app
+
+COPY package.json ./
+
+RUN npm install
+
+COPY ./ ./
+
+ENV CHOKIDAR_USEPOLLING=true
+
+CMD ["npm","run","start"]
+
+# docker build -f Dockerfile.dev . -t jspark98/docker-react-app
+# -f 는 Dockerfile 에 .dev 가 있기때문에 직접 Dockfile을 명시해주려고
+
+# docker run -d -p 3000:3000 -v /usr/src/app/node_modules -v %cd%:/usr/src/app jspark98/docker-react-app
